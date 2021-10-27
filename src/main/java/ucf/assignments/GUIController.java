@@ -1,20 +1,30 @@
 package ucf.assignments;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class GUIController
 {
+    ArrayList<TODOList> listOfLists;
+
     @FXML
-    private Label welcomeText;
+    private ListView<String> list_listView;
+    @FXML
+    private ListView<String> items_listView;
+    @FXML
+    private ListView<String> description_listView;
 
     @FXML
     protected void CreateTODOList()
     {
-        //welcomeText.setText("Welcome to JavaFX Application!");
+        // Open dialog to get title
+        ObservableList<String> items = FXCollections.observableArrayList("test");
+        list_listView.setItems(items);
     }
 
     @FXML
@@ -94,14 +104,14 @@ public class GUIController
 
 class TODOList
 {
-    private String title;
-    private ArrayList<TODOItem> itemsArray;
+    String title;
+    TODOItem[] itemsArray;
 }
 
 class TODOItem
 {
-    private String title;
-    private String description;
-    private String due_Date; // Change to actual date function
-    private boolean complete = false;
+    String title;
+    String description;
+    String due_Date; // Change to actual date function
+    boolean complete = false;
 }

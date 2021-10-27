@@ -33,6 +33,7 @@
 -->
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -42,7 +43,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.GUIController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.GUIController">
   <children>
       <MenuBar>
          <menus>
@@ -79,24 +80,27 @@
       </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-            <SplitPane dividerPositions="0.25862068965517243, 0.6112852664576802" prefHeight="400.0" prefWidth="640.0" scaleShape="false">
+            <SplitPane dividerPositions="0.2586, 0.6113" prefHeight="400.0" prefWidth="640.0" scaleShape="false">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>
                         <Separator layoutY="25.0" prefHeight="0.0" prefWidth="187.0" />
                         <Label layoutX="52.0" layoutY="6.0" text="TODO Lists" />
+                        <ListView fx:id="list_listView" layoutY="23.0" prefHeight="378.0" prefWidth="162.0" />
                      </children>
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="328.0">
                      <children>
                         <Separator layoutY="24.0" prefHeight="3.0" prefWidth="445.0" />
                         <Label layoutX="77.0" layoutY="6.0" text="TODO Items" />
+                        <ListView fx:id="items_listView" layoutY="23.0" prefHeight="378.0" prefWidth="219.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="508.0">
                      <children>
                         <Separator layoutY="25.0" prefHeight="3.0" prefWidth="265.0" />
                         <Label layoutX="92.0" layoutY="6.0" text="Description" />
+                        <ListView fx:id="description_listView" layoutY="23.0" prefHeight="378.0" prefWidth="245.0" />
                      </children>
                   </AnchorPane>
               </items>
