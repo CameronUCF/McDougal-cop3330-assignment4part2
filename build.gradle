@@ -12,7 +12,12 @@ repositories {
 }
 
 ext {
-    junitVersion = '5.7.1'
+    junitVersion = '5.8.1'
+}
+
+sourceSets {
+    main.java.srcDir("src/main")
+    test.java.srcDir("src/test")
 }
 
 sourceCompatibility = '16'
@@ -28,14 +33,14 @@ application {
 }
 
 javafx {
-    version = '16'
+    version = '17'
     modules = ['javafx.controls', 'javafx.fxml']
 }
 
 dependencies {
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    implementation 'com.google.code.gson:gson:2.8.8'
 }
 
 test {

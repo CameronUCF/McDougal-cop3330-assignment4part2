@@ -4,8 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
 
+import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class GUIController
@@ -25,12 +25,12 @@ public class GUIController
         // Open dialog to get title
         ObservableList<String> items = FXCollections.observableArrayList("test");
         list_listView.setItems(items);
+        Gson gson = new Gson();
     }
 
     @FXML
     protected void RemoveTODOList()
     {
-
     }
 
     @FXML
@@ -100,6 +100,12 @@ public class GUIController
     {
 
     }
+
+    static TODOList LoadJSON(String filePath)
+    {
+
+        return null;
+    }
 }
 
 class TODOList
@@ -112,6 +118,6 @@ class TODOItem
 {
     String title;
     String description;
-    String due_Date; // Change to actual date function
+    String due_Date; // Change to actual date function?
     boolean complete = false;
 }

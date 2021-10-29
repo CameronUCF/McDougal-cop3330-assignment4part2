@@ -56,7 +56,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#RemoveTODOItem" text="Remove TODO Item" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#LoadTODOList" text="Load TODO List" />
-                  <MenuItem mnemonicParsing="false" onAction="#SaveCurrentTODOList" text="Save Current TODO List" />
+                  <MenuItem mnemonicParsing="false" onAction="#SaveCurrentTODOList" text="Save Selected TODO List" />
                   <MenuItem mnemonicParsing="false" onAction="#SaveAllTODOLists" text="Save All TODO Lists" />
                </items>
             </Menu>
