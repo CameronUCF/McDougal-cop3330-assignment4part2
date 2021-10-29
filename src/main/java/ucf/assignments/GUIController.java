@@ -1,16 +1,22 @@
 package ucf.assignments;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 
 import com.google.gson.Gson;
+import javafx.scene.layout.VBox;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class GUIController
 {
     ArrayList<TODOList> listOfLists;
+    ObservableList<TODOList> lists = FXCollections.observableArrayList();
 
     @FXML
     private ListView<String> list_listView;
@@ -22,20 +28,66 @@ public class GUIController
     @FXML
     protected void CreateTODOList()
     {
-        // Open dialog to get title
-        ObservableList<String> items = FXCollections.observableArrayList("test");
-        list_listView.setItems(items);
-        Gson gson = new Gson();
+        // TextDialogBox to get TOCDO List Title
+        //Gson gson = new Gson();
+
+        TextInputDialog td = new TextInputDialog();
+        td.getContentText();
+        td.setHeaderText("New TODO List");
+        td.showAndWait();
+        TODOList list = new TODOList();
+        list.title = td.getEditor().getText();
+
+        lists.add(list);
+        list_listView.getItems().add(list.title);
     }
 
     @FXML
-    protected void RemoveTODOList()
+    protected void RemoveTODOList() // Only supports a single remove atm
     {
+        int removeIndices = list_listView.getSelectionModel().getSelectedIndex();
+
+        if(removeIndices >= 0)
+        {
+            lists.remove(removeIndices);
+            list_listView.getItems().remove(removeIndices);
+        }
+
     }
 
     @FXML
     protected void CreateTODOItem()
     {
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+
+        Dialog<TODOItem> dialog = new Dialog<>();
+        dialog.setTitle("Enter TODO Item details.");
+        dialog.setHeaderText("Title\nDescription\nDue Date.");
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        TextField itemTitle = new TextField("Title");
+        TextField itemDescription = new TextField("Description");
+        DatePicker datePicker = new DatePicker(LocalDate.now());
+
+        dialogPane.setContent(new VBox(8, itemTitle, itemDescription, datePicker));
+        Platform.runLater(itemTitle::requestFocus);
+
+        dialog.setResultConverter((ButtonType button) -> {
+            if (button == ButtonType.OK) {
+                return new TODOItem(itemTitle.getText(), itemDescription.getText(), datePicker.getValue(), false);
+            }
+            return null;
+        });
+
+        Optional<TODOItem> optionalItem = dialog.showAndWait();
+        optionalItem.ifPresent((TODOItem item) ->
+        {
+            lists.get(selectedList).itemsArray.add(item);
+            items_listView.getItems().add(item.title);
+        });
+
 
     }
 
@@ -111,13 +163,32 @@ public class GUIController
 class TODOList
 {
     String title;
-    TODOItem[] itemsArray;
+    ArrayList<TODOItem> itemsArray = new ArrayList<TODOItem>();
+
+    public TODOList()
+    {
+
+    }
+
+    public TODOList(String title, ArrayList<TODOItem> itemsArray)
+    {
+        this.title = title;
+        this.itemsArray = itemsArray;
+    }
 }
 
 class TODOItem
 {
     String title;
     String description;
-    String due_Date; // Change to actual date function?
+    LocalDate due_Date; // Change to actual date function?
     boolean complete = false;
+
+    public TODOItem(String title, String description, LocalDate due_Date, boolean complete)
+    {
+        this.title = title;
+        this.description = description;
+        this.due_Date = due_Date;
+        this.complete = complete;
+    }
 }
