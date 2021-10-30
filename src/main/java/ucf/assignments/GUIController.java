@@ -52,6 +52,10 @@ public class GUIController
             lists.remove(removeIndices);
             list_listView.getItems().remove(removeIndices);
         }
+        else
+        {
+            // alert
+        }
 
     }
 
@@ -59,6 +63,14 @@ public class GUIController
     protected void CreateTODOItem()
     {
         int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+        if(selectedList < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
 
         Dialog<TODOItem> dialog = new Dialog<>();
         dialog.setTitle("Enter TODO Item details.");
@@ -87,8 +99,6 @@ public class GUIController
             lists.get(selectedList).itemsArray.add(item);
             items_listView.getItems().add(item.title);
         });
-
-
     }
 
     @FXML
