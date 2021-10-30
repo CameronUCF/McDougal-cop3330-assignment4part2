@@ -23,7 +23,7 @@ public class GUIController
     @FXML
     private ListView<String> items_listView;
     @FXML
-    private ListView<String> description_listView;
+    private TableView<String> desc_tableView;
 
     @FXML
     protected void CreateTODOList()
@@ -115,13 +115,46 @@ public class GUIController
             lists.get(selectedList).itemsArray.add(item);
             items_listView.getItems().add(item.title);
         });
+
+
+        // Add a tableView - Probably easier this way
+            // Make columns for description, due date, and if completed
+
+        // Editing a cell:
+            // Rows will align with index
+            // Use row# as item_arrayList index when editing to arrayList
+            // Use selected list and selected
+
+        //Tableview rules:
+            // Disable sorting
+            // Checkbox for complete would be ideal
+
     }
 
     @FXML
     protected void RemoveTODOItem()
     {
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+        int selectedItem =  items_listView.getSelectionModel().getSelectedIndex();
 
+        if(selectedItem < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO Item.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
+
+        lists.get(selectedList).itemsArray.remove(selectedItem);
+        items_listView.getItems().remove(selectedItem);
     }
+
+    /************************************************
+     *                                              *
+     *      AREA TO ADD ITEM CLICK HANDLING         *
+     *   UPDATE EACH LISTVIEW ON EACH ITEM CLICK    *
+     ************************************************/
 
     @FXML
     protected void LoadTODOList()
@@ -145,38 +178,41 @@ public class GUIController
     @FXML
     protected void EditTODOListTitle()
     {
-
+        // Dialog to edit List Titles
     }
 
     @FXML
     protected void EditTODOItem()
     {
-
+        // Same window as Creating TODOItem, just update arrayList item instead of appending to arraylist
     }
 
     @FXML
     protected void MarkComplete()
     {
-
+        // Set selected item green
+        // Toggle
+        // Black for incomplete
     }
 
     // Filter functions
     @FXML
     protected void ShowComplete()
     {
-
+        // Filter item_listView
     }
 
     @FXML
     protected void ShowIncomplete()
     {
-
+        // Filter item_listView
     }
 
     @FXML
     protected void ShowAll()
     {
-
+        // Essentially display like you are selecting.
+        // Call the code to display list when list is selected
     }
 
     static TODOList LoadJSON(String filePath)
@@ -191,15 +227,9 @@ class TODOList
     String title;
     ArrayList<TODOItem> itemsArray = new ArrayList<TODOItem>();
 
-    public TODOList()
-    {
-
-    }
-
     public TODOList(String title)
     {
         this.title = title;
-        this.itemsArray = itemsArray;
     }
 }
 
