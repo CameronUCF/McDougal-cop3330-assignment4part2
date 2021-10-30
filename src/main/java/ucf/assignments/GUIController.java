@@ -28,18 +28,31 @@ public class GUIController
     @FXML
     protected void CreateTODOList()
     {
-        // TextDialogBox to get TOCDO List Title
-        //Gson gson = new Gson();
+        Dialog<TODOList> dialog = new Dialog<>();
+        dialog.setTitle("Enter TODO List Title.");
+        dialog.setHeaderText("TODO List Title:");
 
-        TextInputDialog td = new TextInputDialog();
-        td.getContentText();
-        td.setHeaderText("New TODO List");
-        td.showAndWait();
-        TODOList list = new TODOList();
-        list.title = td.getEditor().getText();
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        lists.add(list);
-        list_listView.getItems().add(list.title);
+        TextField listTitle = new TextField("Title");
+
+        dialogPane.setContent(new VBox(8, listTitle));
+        Platform.runLater(listTitle::requestFocus);
+
+        dialog.setResultConverter((ButtonType button) -> {
+            if (button == ButtonType.OK) {
+                return new TODOList(listTitle.getText());
+            }
+            return null;
+        });
+
+        Optional<TODOList> optionalList = dialog.showAndWait();
+        optionalList.ifPresent((TODOList list) ->
+        {
+            lists.add(list);
+            list_listView.getItems().add(list.title);
+        });
     }
 
     @FXML
@@ -54,7 +67,10 @@ public class GUIController
         }
         else
         {
-            // alert
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
         }
 
     }
@@ -74,7 +90,7 @@ public class GUIController
 
         Dialog<TODOItem> dialog = new Dialog<>();
         dialog.setTitle("Enter TODO Item details.");
-        dialog.setHeaderText("Title\nDescription\nDue Date.");
+        dialog.setHeaderText("Title,\nDescription,\nDue Date.");
 
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -110,19 +126,19 @@ public class GUIController
     @FXML
     protected void LoadTODOList()
     {
-
+        //Gson gson = new Gson();
     }
 
     @FXML
     protected void SaveCurrentTODOList()
     {
-
+        //Gson gson = new Gson();
     }
 
     @FXML
     protected void SaveAllTODOLists()
     {
-
+        //Gson gson = new Gson();
     }
 
     // Edit functions
@@ -165,7 +181,7 @@ public class GUIController
 
     static TODOList LoadJSON(String filePath)
     {
-
+        //Gson gson = new Gson();
         return null;
     }
 }
@@ -180,7 +196,7 @@ class TODOList
 
     }
 
-    public TODOList(String title, ArrayList<TODOItem> itemsArray)
+    public TODOList(String title)
     {
         this.title = title;
         this.itemsArray = itemsArray;
