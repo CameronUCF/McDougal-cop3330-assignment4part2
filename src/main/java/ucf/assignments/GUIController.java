@@ -23,7 +23,7 @@ public class GUIController
     @FXML
     private ListView<String> items_listView;
     @FXML
-    private TableView<String> desc_tableView;
+    private TableView<TODOItem> item_tableView;
 
     @FXML
     protected void CreateTODOList()
@@ -114,6 +114,8 @@ public class GUIController
         {
             lists.get(selectedList).itemsArray.add(item);
             items_listView.getItems().add(item.title);
+
+            item_tableView.getItems().add(item);
         });
 
 
@@ -215,7 +217,7 @@ public class GUIController
         // Call the code to display list when list is selected
     }
 
-    static TODOList LoadJSON(String filePath)
+    static ArrayList<TODOList> LoadJSON(String filePath)
     {
         //Gson gson = new Gson();
         return null;
