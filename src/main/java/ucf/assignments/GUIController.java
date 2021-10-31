@@ -236,14 +236,51 @@ public class GUIController
             lists.get(selectedList).title = list.title;
             list_listView.getItems().set(selectedList, list.title);
         });
-
-
     }
 
     @FXML
     protected void EditTODOItem()
     {
-        // Same window as Creating TODOItem, just update arrayList item instead of appending to arraylist
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+        int selectedIndex = item_tableView.getSelectionModel().getSelectedIndex();
+        if(selectedList < 0 || selectedIndex < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
+
+        Dialog<TODOItem> dialog = new Dialog<>();
+        dialog.setTitle("Enter TODO Item details.");
+        dialog.setHeaderText("Title, Description, Due Date.");
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        TextField itemTitle = new TextField("Title");
+        TextField itemDescription = new TextField("Description");
+        DatePicker datePicker = new DatePicker(LocalDate.now());
+
+        dialogPane.setContent(new VBox(8, itemTitle, itemDescription, datePicker));
+        Platform.runLater(itemTitle::requestFocus);
+
+        dialog.setResultConverter((ButtonType button) -> {
+            if (button == ButtonType.OK) {
+                return new TODOItem(itemTitle.getText(), itemDescription.getText(), datePicker.getValue(), false);
+            }
+            return null;
+        });
+
+        Optional<TODOItem> optionalItem = dialog.showAndWait();
+        optionalItem.ifPresent((TODOItem item) ->
+        {
+            lists.get(selectedList).itemsArray.get(selectedIndex).setTitle(item.getTitle());
+            lists.get(selectedList).itemsArray.get(selectedIndex).setDescription(item.getDescription());
+            lists.get(selectedList).itemsArray.get(selectedIndex).setDue_Date(item.getDue_Date());
+            lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(item.isComplete());
+        });
     }
 
     @FXML

@@ -64,8 +64,9 @@
             <Menu mnemonicParsing="false" text="Edit">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#EditTODOListTitle" text="Edit TODO List Title" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#EditTODOItem" text="Edit TODO Item" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#MarkComplete" text="Mark Complete" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Filter">
