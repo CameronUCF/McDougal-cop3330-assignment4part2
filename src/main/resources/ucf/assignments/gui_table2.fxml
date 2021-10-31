@@ -86,12 +86,12 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="233.0">
                      <children>
                         <Label layoutX="22.0" layoutY="6.0" text="TODO Lists" />
-                        <ListView fx:id="list_listView" layoutY="23.0" prefHeight="378.0" prefWidth="100.0" />
+                        <ListView fx:id="list_listView" layoutY="23.0" onMouseClicked="#onTODOListClick" prefHeight="378.0" prefWidth="926.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="508.0">
                      <children>
-                        <TableView fx:id="item_tableView" editable="true" layoutX="-2.0" layoutY="-1.0" prefHeight="400.0" prefWidth="825.0">
+                        <TableView fx:id="item_tableView" editable="true" layoutX="-2.0" layoutY="-1.0" prefHeight="400.0" prefWidth="935.0">
                           <placeholder>
                              <Label text="" />
                           </placeholder>

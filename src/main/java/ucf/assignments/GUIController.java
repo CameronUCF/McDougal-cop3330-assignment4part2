@@ -10,6 +10,9 @@ import javafx.scene.control.*;
 import com.google.gson.Gson;
 import javafx.scene.layout.VBox;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -19,6 +22,8 @@ public class GUIController
 
     @FXML
     private ObservableList<TODOList> lists = FXCollections.observableArrayList();
+
+    private int currentTable;
 
     @FXML
     private ListView<String> list_listView;
@@ -39,14 +44,10 @@ public class GUIController
     @FXML
     private void initialize()
     {
-        // Initialize the person table with the two columns.
         titleCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         descCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         dueDate_tableCol.setCellValueFactory(cellData -> cellData.getValue().dueDateProperty().asString());
         completeCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().completeProperty().asString());
-
-        //list_listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        //list_listView.setItems(lists);
     }
 
     @FXML
@@ -173,11 +174,19 @@ public class GUIController
         items_listView.getItems().remove(selectedItem);
     }
 
-    /************************************************
-     *                                              *
-     *      AREA TO ADD ITEM CLICK HANDLING         *
-     *   UPDATE EACH LISTVIEW ON EACH ITEM CLICK    *
-     ************************************************/
+    @FXML
+    protected void onTODOListClick()
+    {
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+
+        if(selectedList >= 0 && selectedList != currentTable)
+        {
+            currentTable = selectedList;
+            item_tableView.getItems().clear();
+
+            item_tableView.getItems().addAll(lists.get(selectedList).itemsArray);
+        }
+    }
 
     @FXML
     protected void LoadTODOList()
@@ -194,7 +203,16 @@ public class GUIController
     @FXML
     protected void SaveAllTODOLists()
     {
-        //Gson gson = new Gson();
+        Gson gson = new Gson();
+        try
+        {
+            Writer writer = new FileWriter("TODOList.json");
+            gson.toJson(lists, writer);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     // Edit functions
