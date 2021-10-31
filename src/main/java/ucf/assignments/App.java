@@ -12,7 +12,7 @@ public class App extends Application
     @Override
     public void start(Stage stage) throws IOException
     {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("gui_table.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("gui_table2.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 926, 400);
         stage.setTitle("To-do List");
         stage.setScene(scene);

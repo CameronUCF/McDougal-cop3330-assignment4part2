@@ -64,6 +64,8 @@
             <Menu mnemonicParsing="false" text="Edit">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#EditTODOListTitle" text="Edit TODO List Title" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#EditTODOItem" text="Edit TODO Item" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Filter">
@@ -93,10 +95,10 @@
                              <Label text="" />
                           </placeholder>
                           <columns>
-                              <TableColumn fx:id="titleCol_tableCol" onEditCommit="#onTitleEdit" prefWidth="154.0" sortable="false" text="Title" />
-                            <TableColumn fx:id="descCol_tableCol" onEditCommit="#onDescriptionEdit" prefWidth="525.0" sortable="false" text="Description" />
-                            <TableColumn fx:id="dueDate_tableCol" onEditCommit="#onDueDateEdit" prefWidth="72.0" resizable="false" sortable="false" text="Due Date" />
-                              <TableColumn fx:id="completeCol_tableCol" onEditCommit="#onCompleteToggle" prefWidth="72.0" resizable="false" sortable="false" text="Completed" />
+                              <TableColumn fx:id="titleCol_tableCol" editable="false" prefWidth="154.0" sortable="false" text="Title" />
+                            <TableColumn fx:id="descCol_tableCol" editable="false" prefWidth="525.0" sortable="false" text="Description" />
+                            <TableColumn fx:id="dueDate_tableCol" editable="false" prefWidth="72.0" resizable="false" sortable="false" text="Due Date" />
+                              <TableColumn fx:id="completeCol_tableCol" editable="false" prefWidth="72.0" resizable="false" sortable="false" text="Completed" />
                           </columns>
                         </TableView>
                      </children>

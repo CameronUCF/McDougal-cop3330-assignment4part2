@@ -16,7 +16,9 @@ import java.util.Optional;
 
 public class GUIController
 {
-    ObservableList<TODOList> lists = FXCollections.observableArrayList();
+
+    @FXML
+    private ObservableList<TODOList> lists = FXCollections.observableArrayList();
 
     @FXML
     private ListView<String> list_listView;
@@ -38,10 +40,13 @@ public class GUIController
     private void initialize()
     {
         // Initialize the person table with the two columns.
-        //titleCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
+        titleCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         descCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         dueDate_tableCol.setCellValueFactory(cellData -> cellData.getValue().dueDateProperty().asString());
         completeCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().completeProperty().asString());
+
+        //list_listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        //list_listView.setItems(lists);
     }
 
     @FXML
@@ -109,7 +114,7 @@ public class GUIController
 
         Dialog<TODOItem> dialog = new Dialog<>();
         dialog.setTitle("Enter TODO Item details.");
-        dialog.setHeaderText("Title,\nDescription,\nDue Date.");
+        dialog.setHeaderText("Title, Description, Due Date.");
 
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -132,8 +137,6 @@ public class GUIController
         optionalItem.ifPresent((TODOItem item) ->
         {
             lists.get(selectedList).itemsArray.add(item);
-            items_listView.getItems().add(item.getTitle());
-
             item_tableView.getItems().add(item);
         });
 
@@ -149,7 +152,6 @@ public class GUIController
         //Tableview rules:
             // Disable sorting
             // Checkbox for complete would be ideal
-
     }
 
     @FXML
@@ -199,7 +201,43 @@ public class GUIController
     @FXML
     protected void EditTODOListTitle()
     {
-        // Dialog to edit List Titles
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+        if(selectedList < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
+
+        Dialog<TODOList> dialog = new Dialog<>();
+        dialog.setTitle("Enter TODO List Title.");
+        dialog.setHeaderText("TODO List Title:");
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        TextField listTitle = new TextField("Title");
+
+        dialogPane.setContent(new VBox(8, listTitle));
+        Platform.runLater(listTitle::requestFocus);
+
+        dialog.setResultConverter((ButtonType button) -> {
+            if (button == ButtonType.OK) {
+                return new TODOList(listTitle.getText());
+            }
+            return null;
+        });
+
+        Optional<TODOList> optionalList = dialog.showAndWait();
+        optionalList.ifPresent((TODOList list) ->
+        {
+            lists.get(selectedList).title = list.title;
+            list_listView.getItems().set(selectedList, list.title);
+        });
+
+
     }
 
     @FXML
