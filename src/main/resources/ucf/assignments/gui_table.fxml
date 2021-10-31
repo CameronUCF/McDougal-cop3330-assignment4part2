@@ -102,9 +102,9 @@
                              <Label text="" />
                           </placeholder>
                           <columns>
-                              <TableColumn prefWidth="69.0" resizable="false" sortable="false" text="Completed" />
-                            <TableColumn prefWidth="536.0" sortable="false" text="Description" />
-                            <TableColumn prefWidth="97.0" sortable="false" text="Due Date" />
+                              <TableColumn fx:id="completeCol_tableCol" prefWidth="69.0" resizable="false" sortable="false" text="Completed" />
+                            <TableColumn fx:id="descCol_tableCol" prefWidth="536.0" sortable="false" text="Description" />
+                            <TableColumn fx:id="dueDate_tableCol" prefWidth="97.0" sortable="false" text="Due Date" />
                           </columns>
                         </TableView>
                      </children>

@@ -1,6 +1,7 @@
 package ucf.assignments;
 
 import javafx.application.Platform;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,7 +16,6 @@ import java.util.Optional;
 
 public class GUIController
 {
-    ArrayList<TODOList> listOfLists;
     ObservableList<TODOList> lists = FXCollections.observableArrayList();
 
     @FXML
@@ -24,6 +24,25 @@ public class GUIController
     private ListView<String> items_listView;
     @FXML
     private TableView<TODOItem> item_tableView;
+    @FXML
+    private TableColumn<TODOItem,String> titleCol_tableCol;
+    @FXML
+    private TableColumn<TODOItem,String> descCol_tableCol;
+    @FXML
+    private TableColumn<TODOItem,String> dueDate_tableCol;
+    @FXML
+    private TableColumn<TODOItem,String> completeCol_tableCol;
+
+
+    @FXML
+    private void initialize()
+    {
+        // Initialize the person table with the two columns.
+        //titleCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
+        descCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
+        dueDate_tableCol.setCellValueFactory(cellData -> cellData.getValue().dueDateProperty().asString());
+        completeCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().completeProperty().asString());
+    }
 
     @FXML
     protected void CreateTODOList()
@@ -113,7 +132,7 @@ public class GUIController
         optionalItem.ifPresent((TODOItem item) ->
         {
             lists.get(selectedList).itemsArray.add(item);
-            items_listView.getItems().add(item.title);
+            items_listView.getItems().add(item.getTitle());
 
             item_tableView.getItems().add(item);
         });
@@ -237,16 +256,77 @@ class TODOList
 
 class TODOItem
 {
-    String title;
-    String description;
-    LocalDate due_Date; // Change to actual date function?
-    boolean complete = false;
+    private StringProperty title;
+    private StringProperty description;
+    private ObjectProperty<LocalDate> due_Date;
+    private BooleanProperty complete;
 
     public TODOItem(String title, String description, LocalDate due_Date, boolean complete)
     {
-        this.title = title;
-        this.description = description;
-        this.due_Date = due_Date;
-        this.complete = complete;
+        this.title = new SimpleStringProperty(title);
+        this.description = new SimpleStringProperty(description);
+        this.due_Date = new SimpleObjectProperty<LocalDate>(due_Date);
+        this.complete = new SimpleBooleanProperty(complete);
+    }
+
+    public String getTitle()
+    {
+        return title.get();
+    }
+
+    public StringProperty titleProperty()
+    {
+        return title;
+    }
+
+    public String getDescription()
+    {
+        return description.get();
+    }
+
+    public StringProperty descriptionProperty()
+    {
+        return description;
+    }
+
+    public LocalDate getDue_Date()
+    {
+        return due_Date.get();
+    }
+
+    public ObjectProperty<LocalDate> dueDateProperty()
+    {
+
+        return due_Date;
+    }
+
+    public boolean isComplete()
+    {
+        return complete.get();
+    }
+
+    public BooleanProperty completeProperty()
+    {
+        return complete;
+    }
+
+    public void setTitle(String _title)
+    {
+        this.title.set(_title);
+    }
+
+    public void setDescription(String _description)
+    {
+        this.description.set(_description);
+    }
+
+    public void setDue_Date(LocalDate date)
+    {
+        this.due_Date.set(date);
+    }
+
+    public void setComplete(boolean status)
+    {
+        this.complete.set(status);
     }
 }

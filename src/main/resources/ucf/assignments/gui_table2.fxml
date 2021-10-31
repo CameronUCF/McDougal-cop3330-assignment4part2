@@ -94,7 +94,7 @@
                           </placeholder>
                           <columns>
                               <TableColumn fx:id="titleCol_tableCol" onEditCommit="#onTitleEdit" prefWidth="154.0" sortable="false" text="Title" />
-                            <TableColumn fx:id="descCol_tableCol" prefWidth="525.0" sortable="false" text="Description" />
+                            <TableColumn fx:id="descCol_tableCol" onEditCommit="#onDescriptionEdit" prefWidth="525.0" sortable="false" text="Description" />
                             <TableColumn fx:id="dueDate_tableCol" onEditCommit="#onDueDateEdit" prefWidth="72.0" resizable="false" sortable="false" text="Due Date" />
                               <TableColumn fx:id="completeCol_tableCol" onEditCommit="#onCompleteToggle" prefWidth="72.0" resizable="false" sortable="false" text="Completed" />
                           </columns>
