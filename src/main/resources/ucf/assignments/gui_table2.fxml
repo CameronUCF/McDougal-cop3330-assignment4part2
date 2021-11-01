@@ -66,7 +66,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#EditTODOListTitle" text="Edit TODO List Title" />
                   <MenuItem mnemonicParsing="false" onAction="#EditTODOItem" text="Edit TODO Item" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#MarkComplete" text="Mark Complete" />
+                  <MenuItem mnemonicParsing="false" onAction="#MarkComplete" text="Toggle Complete" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Filter">
@@ -99,7 +99,7 @@
                               <TableColumn fx:id="titleCol_tableCol" editable="false" prefWidth="154.0" sortable="false" text="Title" />
                             <TableColumn fx:id="descCol_tableCol" editable="false" prefWidth="525.0" sortable="false" text="Description" />
                             <TableColumn fx:id="dueDate_tableCol" editable="false" prefWidth="72.0" resizable="false" sortable="false" text="Due Date" />
-                              <TableColumn fx:id="completeCol_tableCol" editable="false" prefWidth="72.0" resizable="false" sortable="false" text="Completed" />
+                              <TableColumn fx:id="completeCol_tableCol" prefWidth="72.0" resizable="false" sortable="false" text="Completed" />
                           </columns>
                         </TableView>
                      </children>

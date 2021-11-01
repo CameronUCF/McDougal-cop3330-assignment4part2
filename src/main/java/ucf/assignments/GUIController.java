@@ -14,7 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class GUIController
@@ -24,6 +23,7 @@ public class GUIController
     private ObservableList<TODOList> lists = FXCollections.observableArrayList();
 
     private int currentTable;
+    private boolean filtered = false;
 
     @FXML
     private ListView<String> list_listView;
@@ -38,7 +38,7 @@ public class GUIController
     @FXML
     private TableColumn<TODOItem,String> dueDate_tableCol;
     @FXML
-    private TableColumn<TODOItem,String> completeCol_tableCol;
+    private TableColumn<TODOItem,Boolean> completeCol_tableCol;
 
 
     @FXML
@@ -47,7 +47,12 @@ public class GUIController
         titleCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         descCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         dueDate_tableCol.setCellValueFactory(cellData -> cellData.getValue().dueDateProperty().asString());
-        completeCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().completeProperty().asString());
+
+        // Checkbox attempt
+        //completeCol_tableCol.setCellFactory(CheckBoxTableCell.forTableColumn(completeCol_tableCol));
+        //completeCol_tableCol.setCellValueFactory(new PropertyValueFactory("Complete"));
+
+        completeCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().completeProperty());
     }
 
     @FXML
@@ -97,7 +102,6 @@ public class GUIController
             alert.setTitle("Error");
             alert.showAndWait();
         }
-
     }
 
     @FXML
@@ -140,19 +144,6 @@ public class GUIController
             lists.get(selectedList).itemsArray.add(item);
             item_tableView.getItems().add(item);
         });
-
-
-        // Add a tableView - Probably easier this way
-            // Make columns for description, due date, and if completed
-
-        // Editing a cell:
-            // Rows will align with index
-            // Use row# as item_arrayList index when editing to arrayList
-            // Use selected list and selected
-
-        //Tableview rules:
-            // Disable sorting
-            // Checkbox for complete would be ideal
     }
 
     @FXML
@@ -161,10 +152,10 @@ public class GUIController
         int selectedList = list_listView.getSelectionModel().getSelectedIndex();
         int selectedItem =  items_listView.getSelectionModel().getSelectedIndex();
 
-        if(selectedItem < 0)
+        if(selectedList < 0 || selectedItem < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
-            alert.setHeaderText("Select a TODO Item.");
+            alert.setHeaderText("Select a TODO List and TODO Item.");
             alert.setTitle("Error");
             alert.showAndWait();
             return;
@@ -203,6 +194,7 @@ public class GUIController
     @FXML
     protected void SaveAllTODOLists()
     {
+        // java.lang.reflect.InaccessibleObjectException: Unable to make field java.lang.String ucf.assignments.TODOList.title accessible: module ucf.assignments does not "opens ucf.assignments" to module com.google.gson
         Gson gson = new Gson();
         try
         {
@@ -261,10 +253,10 @@ public class GUIController
     {
         int selectedList = list_listView.getSelectionModel().getSelectedIndex();
         int selectedIndex = item_tableView.getSelectionModel().getSelectedIndex();
-        if(selectedList < 0 || selectedIndex < 0)
+        if(selectedList < 0 || selectedIndex < 0 || filtered)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
-            alert.setHeaderText("Select a TODO List.");
+            alert.setHeaderText("Select a TODO List & TODO Item and make sure list is not filtered.");
             alert.setTitle("Error");
             alert.showAndWait();
             return;
@@ -297,49 +289,95 @@ public class GUIController
             lists.get(selectedList).itemsArray.get(selectedIndex).setTitle(item.getTitle());
             lists.get(selectedList).itemsArray.get(selectedIndex).setDescription(item.getDescription());
             lists.get(selectedList).itemsArray.get(selectedIndex).setDue_Date(item.getDue_Date());
-            lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(item.isComplete());
+            lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(item.getComplete());
         });
     }
 
     @FXML
     protected void MarkComplete()
     {
-        // Set selected item green
-        // Toggle
-        // Black for incomplete
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+        int selectedIndex = item_tableView.getSelectionModel().getSelectedIndex();
+        if(selectedList < 0 || selectedIndex < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
+
+        lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(!lists.get(selectedList).itemsArray.get(selectedIndex).getComplete());
     }
 
     // Filter functions
     @FXML
     protected void ShowComplete()
     {
-        // Filter item_listView
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+        if(selectedList < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
+
+        item_tableView.getItems().clear();
+        for(int i = 0; i < lists.get(selectedList).itemsArray.size(); i++)
+        {
+            if(lists.get(selectedList).itemsArray.get(i).getComplete())
+                item_tableView.getItems().add(lists.get(selectedList).itemsArray.get(i));
+        }
+        filtered = true;
     }
 
     @FXML
     protected void ShowIncomplete()
     {
-        // Filter item_listView
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+        if(selectedList < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
+
+        item_tableView.getItems().clear();
+        for(int i = 0; i < lists.get(selectedList).itemsArray.size(); i++)
+        {
+            if(!lists.get(selectedList).itemsArray.get(i).getComplete())
+                item_tableView.getItems().add(lists.get(selectedList).itemsArray.get(i));
+        }
+        filtered = true;
     }
 
     @FXML
     protected void ShowAll()
     {
-        // Essentially display like you are selecting.
-        // Call the code to display list when list is selected
-    }
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+        if(selectedList < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
 
-    static ArrayList<TODOList> LoadJSON(String filePath)
-    {
-        //Gson gson = new Gson();
-        return null;
+        item_tableView.getItems().clear();
+        item_tableView.getItems().addAll(lists.get(selectedList).itemsArray);
+        filtered = false;
     }
 }
 
 class TODOList
 {
     String title;
-    ArrayList<TODOItem> itemsArray = new ArrayList<TODOItem>();
+    ObservableList<TODOItem> itemsArray = FXCollections.observableArrayList();
 
     public TODOList(String title)
     {
@@ -349,16 +387,16 @@ class TODOList
 
 class TODOItem
 {
-    private StringProperty title;
-    private StringProperty description;
-    private ObjectProperty<LocalDate> due_Date;
-    private BooleanProperty complete;
+    private final StringProperty title;
+    private final StringProperty description;
+    private final ObjectProperty<LocalDate> due_Date;
+    private final BooleanProperty complete;
 
     public TODOItem(String title, String description, LocalDate due_Date, boolean complete)
     {
         this.title = new SimpleStringProperty(title);
         this.description = new SimpleStringProperty(description);
-        this.due_Date = new SimpleObjectProperty<LocalDate>(due_Date);
+        this.due_Date = new SimpleObjectProperty<>(due_Date);
         this.complete = new SimpleBooleanProperty(complete);
     }
 
@@ -389,11 +427,10 @@ class TODOItem
 
     public ObjectProperty<LocalDate> dueDateProperty()
     {
-
         return due_Date;
     }
 
-    public boolean isComplete()
+    public boolean getComplete()
     {
         return complete.get();
     }
