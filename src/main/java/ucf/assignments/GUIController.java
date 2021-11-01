@@ -1,5 +1,7 @@
 package ucf.assignments;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -7,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import com.google.gson.Gson;
 import javafx.scene.layout.VBox;
 
 import java.io.FileWriter;
@@ -16,11 +17,15 @@ import java.io.Writer;
 import java.time.LocalDate;
 import java.util.Optional;
 
+/*
+ *  UCF COP3330 Fall 2021 Assignment 4 Solution
+ *  Copyright 2021 Cameron McDougal
+ */
+
 public class GUIController
 {
-
     @FXML
-    private ObservableList<TODOList> lists = FXCollections.observableArrayList();
+    private final ObservableList<TODOList> lists = FXCollections.observableArrayList();
 
     private int currentTable;
     private boolean filtered = false;
@@ -86,7 +91,7 @@ public class GUIController
     }
 
     @FXML
-    protected void RemoveTODOList() // Only supports a single remove atm
+    protected void RemoveTODOList()
     {
         int removeIndices = list_listView.getSelectionModel().getSelectedIndex();
 
@@ -194,12 +199,9 @@ public class GUIController
     @FXML
     protected void SaveAllTODOLists()
     {
-        // java.lang.reflect.InaccessibleObjectException: Unable to make field java.lang.String ucf.assignments.TODOList.title accessible: module ucf.assignments does not "opens ucf.assignments" to module com.google.gson
-        Gson gson = new Gson();
-        try
+        try (Writer writer = new FileWriter("TODO.json"))
         {
-            Writer writer = new FileWriter("TODOList.json");
-            gson.toJson(lists, writer);
+            new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(lists, writer);
         }
         catch (IOException e)
         {
