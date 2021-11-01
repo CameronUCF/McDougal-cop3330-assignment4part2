@@ -33,8 +33,6 @@ public class GUIController
     @FXML
     private ListView<String> list_listView;
     @FXML
-    private ListView<String> items_listView;
-    @FXML
     private TableView<TODOItem> item_tableView;
     @FXML
     private TableColumn<TODOItem,String> titleCol_tableCol;
@@ -93,12 +91,12 @@ public class GUIController
     @FXML
     protected void RemoveTODOList()
     {
-        int removeIndices = list_listView.getSelectionModel().getSelectedIndex();
+        int removeIndex = list_listView.getSelectionModel().getSelectedIndex();
 
-        if(removeIndices >= 0)
+        if(removeIndex >= 0)
         {
-            lists.remove(removeIndices);
-            list_listView.getItems().remove(removeIndices);
+            lists.remove(removeIndex);
+            list_listView.getItems().remove(removeIndex);
         }
         else
         {
@@ -155,7 +153,7 @@ public class GUIController
     protected void RemoveTODOItem()
     {
         int selectedList = list_listView.getSelectionModel().getSelectedIndex();
-        int selectedItem =  items_listView.getSelectionModel().getSelectedIndex();
+        int selectedItem =  item_tableView.getSelectionModel().getSelectedIndex();
 
         if(selectedList < 0 || selectedItem < 0)
         {
@@ -167,7 +165,7 @@ public class GUIController
         }
 
         lists.get(selectedList).itemsArray.remove(selectedItem);
-        items_listView.getItems().remove(selectedItem);
+        item_tableView.getItems().remove(selectedItem);
     }
 
     @FXML

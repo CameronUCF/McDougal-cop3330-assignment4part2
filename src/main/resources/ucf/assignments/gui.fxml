@@ -37,13 +37,14 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.GUIController">
+<VBox prefHeight="400.0" prefWidth="926.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.GUIController">
   <children>
       <MenuBar>
          <menus>
@@ -65,7 +66,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#EditTODOListTitle" text="Edit TODO List Title" />
                   <MenuItem mnemonicParsing="false" onAction="#EditTODOItem" text="Edit TODO Item" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#MarkComplete" text="Mark as Complete" />
+                  <MenuItem mnemonicParsing="false" onAction="#MarkComplete" text="Toggle Complete" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Filter">
@@ -80,27 +81,27 @@
       </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-            <SplitPane dividerPositions="0.2586, 0.6113" prefHeight="400.0" prefWidth="640.0" scaleShape="false">
+            <SplitPane dividerPositions="0.11147186147186147" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="926.0" scaleShape="false">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="233.0">
                      <children>
-                        <Separator layoutY="25.0" prefHeight="0.0" prefWidth="187.0" />
-                        <Label layoutX="52.0" layoutY="6.0" text="TODO Lists" />
-                        <ListView fx:id="list_listView" layoutY="23.0" prefHeight="378.0" prefWidth="162.0" />
-                     </children>
-                  </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="328.0">
-                     <children>
-                        <Separator layoutY="24.0" prefHeight="3.0" prefWidth="445.0" />
-                        <Label layoutX="77.0" layoutY="6.0" text="TODO Items" />
-                        <ListView fx:id="items_listView" layoutY="23.0" prefHeight="378.0" prefWidth="219.0" />
+                        <Label layoutX="22.0" layoutY="6.0" text="TODO Lists" />
+                        <ListView fx:id="list_listView" layoutY="23.0" onMouseClicked="#onTODOListClick" prefHeight="378.0" prefWidth="926.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="508.0">
                      <children>
-                        <Separator layoutY="25.0" prefHeight="3.0" prefWidth="265.0" />
-                        <Label layoutX="92.0" layoutY="6.0" text="Description" />
-                        <ListView fx:id="description_listView" layoutY="23.0" prefHeight="378.0" prefWidth="245.0" />
+                        <TableView fx:id="item_tableView" editable="true" layoutX="-2.0" layoutY="-1.0" prefHeight="400.0" prefWidth="935.0">
+                          <placeholder>
+                             <Label text="" />
+                          </placeholder>
+                          <columns>
+                              <TableColumn fx:id="titleCol_tableCol" editable="false" prefWidth="154.0" sortable="false" text="Title" />
+                            <TableColumn fx:id="descCol_tableCol" editable="false" prefWidth="525.0" sortable="false" text="Description" />
+                            <TableColumn fx:id="dueDate_tableCol" editable="false" prefWidth="72.0" resizable="false" sortable="false" text="Due Date" />
+                              <TableColumn fx:id="completeCol_tableCol" prefWidth="72.0" resizable="false" sortable="false" text="Completed" />
+                          </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
               </items>

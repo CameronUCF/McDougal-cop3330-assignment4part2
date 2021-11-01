@@ -1,0 +1,147 @@
+// Start of Class TODOList \\
+Class TODOList variables:
+    String title of TODOList
+    ObservableList of TODOItems
+
+// Class TODOList functions
+Constructor:
+    Set TODOList title to given user input
+
+// Start of Class TODOItem \\
+Class TODOItem variables:
+    String title of TODOItem
+    String description of TODOItem
+    LocalDate of TODOItem
+    boolean for if TODOItem is complete
+
+// Class TODOItem functions
+getTitle:
+    return the object's title
+
+getDescription:
+    return the object's description
+
+getDue_Date:
+    return the object's due date
+
+getComplete:
+    return the object's complete boolean
+
+setTitle:
+    set the object's title
+
+setDescription:
+    set the object's description
+
+setDue_Date:
+    set the object's due date
+
+setComplete:
+    set the object's complete boolean
+
+
+// Start of Class GUIController \\
+Class GUIController variables:
+    ObservableList of TODOList class
+    int to hold our current, active table
+    boolean to know if we are filtered or not
+    Variables to access listView and tableView (including columns)
+
+// Class GUIController functions
+initialize:
+    Assign tableView columns to ObservableList of TODOItems
+
+CreateTODOList:
+    Open a dialog that allows the user to input the TODOList title
+    If the user clicks okay
+        Create a TODOList object
+        Set the object's title to the user's input
+        Add the object to the main ObservableList
+
+RemoveTODOList:
+    Get the current selected list
+    If list is valid
+        Remove from main list and listView
+    else
+        Error dialog
+
+CreateTODOItem:
+    Get current selected list
+    If current selected list is NOT valid
+        Open error dialog
+
+    Open create dialog with 3 different text inputs
+    Add item to current list's itemList
+    Add item to tableView
+
+RemoveTODOItem:
+    Get current selected list
+    Get current selected item
+    if list and item are NOT valid
+        Open error dialog
+
+    Remove item from list
+    Remove item from listView
+
+onTODOListClick:
+    Get new selected listView list
+    if selected listView list is valid and is not already the current list
+        set currentTable to selectedList
+        Clear tableView
+        Populate tableView with new list items
+
+//LoadTODOList:
+
+//SaveCurrentTODOList:
+
+//SaveAllTODOLists:
+
+EditTODOListTitle:
+    Get current selected list
+    if list is NOT valid
+        Open error dialog
+
+    Open edit dialog with a text input
+    Update the list title in the main list
+    Update listView
+
+EditTODOItem:
+    Get current selected list
+    Get current selected item
+    if list and item are NOT valid
+        Open error dialog
+
+    Open edit dialog with 3 different text inputs
+    Update the item variables in the TODOList
+
+MarkComplete:
+    Get current selected list
+    Get current selected item
+    if list and item are NOT valid
+        Open error dialog
+
+    ! toggle the complete boolean in selected TODOItem
+
+ShowComplete:
+    Get the currentSelected list
+    if list is not valid
+        Open error dialog
+
+    Clear tableView
+    Repopulate with only items with complete = true
+
+ShowIncomplete:
+    Get the currentSelected list
+    if list is not valid
+        Open error dialog
+
+    Clear tableView
+    Repopulate with only items with complete != true
+
+ShowAll:
+    Get the currentSelected list
+    if list is not valid
+        Open error dialog
+
+    Clear tableView
+    Repopulate all TODOItems from selected list
