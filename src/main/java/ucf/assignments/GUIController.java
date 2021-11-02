@@ -2,7 +2,6 @@ package ucf.assignments;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -11,11 +10,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -188,7 +187,13 @@ public class GUIController
         Gson gson = new Gson();
         try
         {
-            Reader reader = Files.newBufferedReader(Paths.get("TODO.json"));
+            FileChooser chooser = new FileChooser();
+            File file = chooser.showOpenDialog(null);
+
+            if(file == null)
+                return;
+
+            Reader reader = Files.newBufferedReader(Path.of(file.toURI()));
             MainListWrapper mainListWrapper;
             mainListWrapper = gson.fromJson(reader, MainListWrapper.class);
 
