@@ -90,11 +90,18 @@ onTODOListClick:
         Clear tableView
         Populate tableView with new list items
 
-//LoadTODOList:
+LoadTODOList:
+    Get ObservableList from file using gson
+    Convert to actual TODOList
+    Display in listView and tableView
 
-//SaveCurrentTODOList:
+SaveCurrentTODOList:
+    Convert currently selected file to TODO Wrapper classes
+    Convert to JSon using gson.toJson
 
-//SaveAllTODOLists:
+SaveAllTODOLists:
+    Convert entire TODOList to TODO Wrapper Classes
+    Convert to JSon using gson.toJson
 
 EditTODOListTitle:
     Get current selected list

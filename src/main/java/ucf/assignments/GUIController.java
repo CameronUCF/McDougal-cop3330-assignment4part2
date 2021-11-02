@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /*
@@ -181,22 +182,32 @@ public class GUIController
         }
     }
 
-    @FXML // Error: java.lang.IllegalArgumentException: Can not set javafx.collections.ObservableList field ucf.assignments.TODOListWrapper.itemsArray to java.util.ArrayList
+    @FXML
     protected void LoadTODOList()
     {
         Gson gson = new Gson();
         try
         {
             Reader reader = Files.newBufferedReader(Paths.get("TODO.json"));
-            ObservableList<TODOListWrapper> mainListWrapper;
-            Type collectionType = new TypeToken<ObservableList<TODOListWrapper>>(){}.getType();
-            mainListWrapper = gson.fromJson(reader, collectionType);
+            MainListWrapper mainListWrapper;
+            mainListWrapper = gson.fromJson(reader, MainListWrapper.class);
 
-
-            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
-            alert.setHeaderText(mainListWrapper.get(0).title);
-            alert.setTitle("Error");
-            alert.showAndWait();
+            lists.removeAll();
+            list_listView.getItems().clear();
+            item_tableView.getItems().clear();
+            // Convert back to ObservableList and proper TODO classes
+            for(int i = 0; i < mainListWrapper.list.size(); i++)
+            {
+                TODOList todoList = new TODOList(mainListWrapper.list.get(i).title);
+                for(int j = 0; j < mainListWrapper.list.get(i).itemsArray.size(); j++)
+                {
+                    TODOItem todoItem = new TODOItem(mainListWrapper.list.get(i).itemsArray.get(j).title, mainListWrapper.list.get(i).itemsArray.get(j).description, LocalDate.parse(mainListWrapper.list.get(i).itemsArray.get(j).due_date), mainListWrapper.list.get(i).itemsArray.get(j).complete);
+                    todoList.itemsArray.add(todoItem);
+                }
+                lists.add(todoList);
+                list_listView.getItems().add(todoList.title);
+            }
+            item_tableView.getItems().addAll(lists.get(0).itemsArray);
         }
         catch (IOException e)
         {
@@ -220,7 +231,7 @@ public class GUIController
                 return;
             }
 
-            ObservableList<TODOListWrapper> mainListWrapper = FXCollections.observableArrayList();
+            MainListWrapper mainListWrapper = new MainListWrapper();
 
             TODOListWrapper listWrapper = new TODOListWrapper();
             listWrapper.title = lists.get(selectedList).title;
@@ -233,7 +244,7 @@ public class GUIController
                 itemWrapper.complete = lists.get(selectedList).itemsArray.get(j).getComplete();
                 listWrapper.itemsArray.add(itemWrapper);
             }
-            mainListWrapper.add(listWrapper);
+            mainListWrapper.list.add(listWrapper);
 
             new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(mainListWrapper, writer);
         }
@@ -248,7 +259,7 @@ public class GUIController
     {
         try (Writer writer = new FileWriter("TODO.json"))
         {
-            ObservableList<TODOListWrapper> mainListWrapper = FXCollections.observableArrayList();
+            MainListWrapper mainListWrapper = new MainListWrapper();
 
             for(int i = 0; i < lists.size(); i++)
             {
@@ -263,7 +274,7 @@ public class GUIController
                     itemWrapper.complete = lists.get(i).itemsArray.get(j).getComplete();
                     listWrapper.itemsArray.add(itemWrapper);
                 }
-                mainListWrapper.add(listWrapper);
+                mainListWrapper.list.add(listWrapper);
             }
 
             new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(mainListWrapper, writer);
@@ -529,10 +540,15 @@ class TODOItem
 }
 
 // Wrapper classes needed for Gson as JDK16 does not allow access of internal modules
+class MainListWrapper
+{
+    ArrayList<TODOListWrapper> list;;
+}
+
 class TODOListWrapper
 {
     String title;
-    ObservableList<TODOItemWrapper> itemsArray = FXCollections.observableArrayList();
+    ArrayList<TODOItemWrapper> itemsArray;
 }
 
 class TODOItemWrapper
