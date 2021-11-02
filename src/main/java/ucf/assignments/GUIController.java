@@ -55,6 +55,7 @@ public class GUIController
         completeCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().completeProperty());
     }
 
+    // File Menu Functions
     @FXML
     protected void CreateTODOList()
     {
@@ -279,17 +280,17 @@ public class GUIController
         {
             MainListWrapper mainListWrapper = new MainListWrapper();
 
-            for(int i = 0; i < lists.size(); i++)
+            for (TODOList list : lists)
             {
                 TODOListWrapper listWrapper = new TODOListWrapper();
-                listWrapper.title = lists.get(i).title;
-                for(int j = 0; j < lists.get(i).itemsArray.size(); j++)
+                listWrapper.title = list.title;
+                for (int j = 0; j < list.itemsArray.size(); j++)
                 {
                     TODOItemWrapper itemWrapper = new TODOItemWrapper();
-                    itemWrapper.title = lists.get(i).itemsArray.get(j).getTitle();
-                    itemWrapper.description = lists.get(i).itemsArray.get(j).getDescription();
-                    itemWrapper.due_date = lists.get(i).itemsArray.get(j).getDue_Date().toString();
-                    itemWrapper.complete = lists.get(i).itemsArray.get(j).getComplete();
+                    itemWrapper.title = list.itemsArray.get(j).getTitle();
+                    itemWrapper.description = list.itemsArray.get(j).getDescription();
+                    itemWrapper.due_date = list.itemsArray.get(j).getDue_Date().toString();
+                    itemWrapper.complete = list.itemsArray.get(j).getComplete();
                     listWrapper.itemsArray.add(itemWrapper);
                 }
                 mainListWrapper.list.add(listWrapper);
@@ -303,7 +304,7 @@ public class GUIController
         }
     }
 
-    // Edit functions
+    // Edit Menu Functions
     @FXML
     protected void EditTODOListTitle()
     {
@@ -324,7 +325,7 @@ public class GUIController
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        TextField listTitle = new TextField("Title");
+        TextField listTitle = new TextField(lists.get(selectedList).title);
 
         dialogPane.setContent(new VBox(8, listTitle));
         Platform.runLater(listTitle::requestFocus);
@@ -365,9 +366,9 @@ public class GUIController
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        TextField itemTitle = new TextField("Title");
-        TextField itemDescription = new TextField("Description");
-        DatePicker datePicker = new DatePicker(LocalDate.now());
+        TextField itemTitle = new TextField(lists.get(selectedList).itemsArray.get(selectedIndex).getTitle());
+        TextField itemDescription = new TextField(lists.get(selectedList).itemsArray.get(selectedIndex).getDescription());
+        DatePicker datePicker = new DatePicker(lists.get(selectedList).itemsArray.get(selectedIndex).getDue_Date());
 
         dialogPane.setContent(new VBox(8, itemTitle, itemDescription, datePicker));
         Platform.runLater(itemTitle::requestFocus);
@@ -406,7 +407,7 @@ public class GUIController
         lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(!lists.get(selectedList).itemsArray.get(selectedIndex).getComplete());
     }
 
-    // Filter functions
+    // Filter Menu Functions
     @FXML
     protected void ShowComplete()
     {
