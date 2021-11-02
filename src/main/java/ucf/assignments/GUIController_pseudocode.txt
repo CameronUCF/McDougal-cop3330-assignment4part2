@@ -96,10 +96,12 @@ LoadTODOList:
     Display in listView and tableView
 
 SaveCurrentTODOList:
+    Set save location using save location dialog
     Convert currently selected file to TODO Wrapper classes
     Convert to JSon using gson.toJson
 
 SaveAllTODOLists:
+    Set save location using save location dialog
     Convert entire TODOList to TODO Wrapper Classes
     Convert to JSon using gson.toJson
 

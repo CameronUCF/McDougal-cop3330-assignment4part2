@@ -188,16 +188,17 @@ public class GUIController
         try
         {
             FileChooser chooser = new FileChooser();
+            chooser.setTitle("Open TODO List");
+            chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.JSON"));
             File file = chooser.showOpenDialog(null);
 
             if(file == null)
                 return;
 
             Reader reader = Files.newBufferedReader(Path.of(file.toURI()));
-            MainListWrapper mainListWrapper;
-            mainListWrapper = gson.fromJson(reader, MainListWrapper.class);
+            MainListWrapper mainListWrapper = gson.fromJson(reader, MainListWrapper.class);
 
-            lists.removeAll();
+            lists.clear();
             list_listView.getItems().clear();
             item_tableView.getItems().clear();
             // Convert back to ObservableList and proper TODO classes
@@ -223,18 +224,25 @@ public class GUIController
     @FXML
     protected void SaveCurrentTODOList()
     {
-        try (Writer writer = new FileWriter("TODO.json"))
-        {
-            int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
 
-            if(selectedList < 0)
-            {
-                Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
-                alert.setHeaderText("Select a TODO List.");
-                alert.setTitle("Error");
-                alert.showAndWait();
-                return;
-            }
+        if(selectedList < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open TODO List");
+        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.JSON"));
+        File file = chooser.showSaveDialog(null);
+
+        try (Writer writer = new FileWriter(file))
+        {
+
 
             MainListWrapper mainListWrapper = new MainListWrapper();
 
@@ -262,7 +270,12 @@ public class GUIController
     @FXML
     protected void SaveAllTODOLists()
     {
-        try (Writer writer = new FileWriter("TODO.json"))
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open TODO List");
+        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.JSON"));
+        File file = chooser.showSaveDialog(null);
+
+        try (Writer writer = new FileWriter(file))
         {
             MainListWrapper mainListWrapper = new MainListWrapper();
 
@@ -547,13 +560,13 @@ class TODOItem
 // Wrapper classes needed for Gson as JDK16 does not allow access of internal modules
 class MainListWrapper
 {
-    ArrayList<TODOListWrapper> list;;
+    ArrayList<TODOListWrapper> list = new ArrayList<>();
 }
 
 class TODOListWrapper
 {
     String title;
-    ArrayList<TODOItemWrapper> itemsArray;
+    ArrayList<TODOItemWrapper> itemsArray = new ArrayList<>();
 }
 
 class TODOItemWrapper
