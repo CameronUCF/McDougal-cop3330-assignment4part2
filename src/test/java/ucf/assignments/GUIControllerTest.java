@@ -23,7 +23,7 @@ class GUIControllerTest
     @Test
     void createTODOList()
     {
-
+        controller.CreateTODOList();
     }
 
     @Test

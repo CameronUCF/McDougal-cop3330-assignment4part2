@@ -2,6 +2,7 @@ package ucf.assignments;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -11,9 +12,10 @@ import javafx.scene.control.*;
 
 import javafx.scene.layout.VBox;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -45,16 +47,11 @@ public class GUIController
 
 
     @FXML
-    private void initialize()
+    protected void initialize()
     {
         titleCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         descCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         dueDate_tableCol.setCellValueFactory(cellData -> cellData.getValue().dueDateProperty().asString());
-
-        // Checkbox attempt
-        //completeCol_tableCol.setCellFactory(CheckBoxTableCell.forTableColumn(completeCol_tableCol));
-        //completeCol_tableCol.setCellValueFactory(new PropertyValueFactory("Complete"));
-
         completeCol_tableCol.setCellValueFactory(cellData -> cellData.getValue().completeProperty());
     }
 
@@ -97,6 +94,8 @@ public class GUIController
         {
             lists.remove(removeIndex);
             list_listView.getItems().remove(removeIndex);
+            item_tableView.getItems().clear();
+            list_listView.getSelectionModel().clearSelection();
         }
         else
         {
@@ -182,16 +181,66 @@ public class GUIController
         }
     }
 
-    @FXML
+    @FXML // Error: java.lang.IllegalArgumentException: Can not set javafx.collections.ObservableList field ucf.assignments.TODOListWrapper.itemsArray to java.util.ArrayList
     protected void LoadTODOList()
     {
-        //Gson gson = new Gson();
+        Gson gson = new Gson();
+        try
+        {
+            Reader reader = Files.newBufferedReader(Paths.get("TODO.json"));
+            ObservableList<TODOListWrapper> mainListWrapper;
+            Type collectionType = new TypeToken<ObservableList<TODOListWrapper>>(){}.getType();
+            mainListWrapper = gson.fromJson(reader, collectionType);
+
+
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText(mainListWrapper.get(0).title);
+            alert.setTitle("Error");
+            alert.showAndWait();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     protected void SaveCurrentTODOList()
     {
-        //Gson gson = new Gson();
+        try (Writer writer = new FileWriter("TODO.json"))
+        {
+            int selectedList = list_listView.getSelectionModel().getSelectedIndex();
+
+            if(selectedList < 0)
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+                alert.setHeaderText("Select a TODO List.");
+                alert.setTitle("Error");
+                alert.showAndWait();
+                return;
+            }
+
+            ObservableList<TODOListWrapper> mainListWrapper = FXCollections.observableArrayList();
+
+            TODOListWrapper listWrapper = new TODOListWrapper();
+            listWrapper.title = lists.get(selectedList).title;
+            for(int j = 0; j < lists.get(selectedList).itemsArray.size(); j++)
+            {
+                TODOItemWrapper itemWrapper = new TODOItemWrapper();
+                itemWrapper.title = lists.get(selectedList).itemsArray.get(j).getTitle();
+                itemWrapper.description = lists.get(selectedList).itemsArray.get(j).getDescription();
+                itemWrapper.due_date = lists.get(selectedList).itemsArray.get(j).getDue_Date().toString();
+                itemWrapper.complete = lists.get(selectedList).itemsArray.get(j).getComplete();
+                listWrapper.itemsArray.add(itemWrapper);
+            }
+            mainListWrapper.add(listWrapper);
+
+            new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(mainListWrapper, writer);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -199,7 +248,25 @@ public class GUIController
     {
         try (Writer writer = new FileWriter("TODO.json"))
         {
-            new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(lists, writer);
+            ObservableList<TODOListWrapper> mainListWrapper = FXCollections.observableArrayList();
+
+            for(int i = 0; i < lists.size(); i++)
+            {
+                TODOListWrapper listWrapper = new TODOListWrapper();
+                listWrapper.title = lists.get(i).title;
+                for(int j = 0; j < lists.get(i).itemsArray.size(); j++)
+                {
+                    TODOItemWrapper itemWrapper = new TODOItemWrapper();
+                    itemWrapper.title = lists.get(i).itemsArray.get(j).getTitle();
+                    itemWrapper.description = lists.get(i).itemsArray.get(j).getDescription();
+                    itemWrapper.due_date = lists.get(i).itemsArray.get(j).getDue_Date().toString();
+                    itemWrapper.complete = lists.get(i).itemsArray.get(j).getComplete();
+                    listWrapper.itemsArray.add(itemWrapper);
+                }
+                mainListWrapper.add(listWrapper);
+            }
+
+            new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(mainListWrapper, writer);
         }
         catch (IOException e)
         {
@@ -459,4 +526,19 @@ class TODOItem
     {
         this.complete.set(status);
     }
+}
+
+// Wrapper classes needed for Gson as JDK16 does not allow access of internal modules
+class TODOListWrapper
+{
+    String title;
+    ObservableList<TODOItemWrapper> itemsArray = FXCollections.observableArrayList();
+}
+
+class TODOItemWrapper
+{
+    String title;
+    String description;
+    String due_date;
+    boolean complete;
 }

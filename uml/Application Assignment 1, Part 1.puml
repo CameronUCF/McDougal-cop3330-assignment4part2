@@ -56,4 +56,18 @@ class TODOItem
     +void setDue_Date(LocalDate date)
     +void setComplete(boolean status)
 }
+
+class TODOListWrapper
+{
+    +String title
+    +ObservableList<TODOItemWrapper> itemsArray
+}
+
+class TODOItemWrapper
+{
+    +String title
+    +String description
+    +String due_date
+    +boolean complete
+}
 @enduml
