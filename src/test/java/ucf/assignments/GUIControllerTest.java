@@ -18,13 +18,12 @@ class GUIControllerTest
     void setUp()
     {
         controller = new GUIController();
-
     }
 
     @Test
     void createTODOList()
     {
-        
+
     }
 
     @Test

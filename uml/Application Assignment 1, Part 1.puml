@@ -1,0 +1,59 @@
+@startuml
+class GUIController
+{
+  -ObservableList<TODOList> lists
+  -int currentTable
+  -ListView<String> list_listView
+  -TableView<TODOItem> item_tableView
+  -TableColumn<TODOItem,String> titleCol_tableCol
+  -TableColumn<TODOItem,String> descCol_tableCol
+  -TableColumn<TODOItem,String> dueDate_tableCol
+  -TableColumn<TODOItem,Boolean> completeCol_tableCol
+
+  -void initialize()
+  #void CreateTODOList()
+  #void RemoveTODOList()
+  #void CreateTODOItem()
+  #void RemoveTODOItem()
+  #void onTODOListClick()
+  #void LoadTODOList()
+  #void SaveCurrentTODOList()
+  #void SaveAllTODOLists()
+  #void EditTODOListTitle()
+  #void EditTODOItem()
+  #void MarkComplete()
+  #void ShowComplete()
+  #void ShowIncomplete()
+  #void ShowAll()
+}
+
+class TODOList
+{
+    +String title
+    +ObservableList<TODOItem> itemsArray
+
+    +TODOList(String title)
+}
+
+class TODOItem
+{
+    -StringProperty title
+    -StringProperty description
+    -ObjectProperty<LocalDate> due_date
+    -BooleanProperty complete
+
+    +TODOItem(String title, String description, LocalDate due_Date, boolean complete)
+    +String getTitle()
+    +StringProperty titleProperty()
+    +String getDescription()
+    +StringProperty descriptionProperty()
+    +LocalDate getDue_Date()
+    +ObjectProperty<LocalDate> dueDateProperty()
+    +boolean getComplete()
+    +BooleanProperty completeProperty()
+    +void setTitle(String _title)
+    +void setDescription(String description)
+    +void setDue_Date(LocalDate date)
+    +void setComplete(boolean status)
+}
+@enduml
