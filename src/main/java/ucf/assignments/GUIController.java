@@ -81,9 +81,16 @@ public class GUIController
         Optional<TODOList> optionalList = dialog.showAndWait();
         optionalList.ifPresent((TODOList list) ->
         {
-            lists.add(list);
-            list_listView.getItems().add(list.title);
+            AddTODOList(list);
+            //lists.add(list);
+            //list_listView.getItems().add(list.title);
         });
+    }
+
+    protected void AddTODOList(TODOList list)
+    {
+        lists.add(list);
+        list_listView.getItems().add(list.title);
     }
 
     @FXML
@@ -93,10 +100,11 @@ public class GUIController
 
         if(removeIndex >= 0)
         {
-            lists.remove(removeIndex);
-            list_listView.getItems().remove(removeIndex);
-            item_tableView.getItems().clear();
-            list_listView.getSelectionModel().clearSelection();
+            DeleteTODOList(removeIndex);
+            //lists.remove(removeIndex);
+            //list_listView.getItems().remove(removeIndex);
+            //item_tableView.getItems().clear();
+            //list_listView.getSelectionModel().clearSelection();
         }
         else
         {
@@ -105,6 +113,14 @@ public class GUIController
             alert.setTitle("Error");
             alert.showAndWait();
         }
+    }
+
+    protected void DeleteTODOList(int removeIndex)
+    {
+        lists.remove(removeIndex);
+        list_listView.getItems().remove(removeIndex);
+        item_tableView.getItems().clear();
+        list_listView.getSelectionModel().clearSelection();
     }
 
     @FXML
@@ -144,9 +160,16 @@ public class GUIController
         Optional<TODOItem> optionalItem = dialog.showAndWait();
         optionalItem.ifPresent((TODOItem item) ->
         {
-            lists.get(selectedList).itemsArray.add(item);
-            item_tableView.getItems().add(item);
+            AddTODOItem(item, selectedList);
+            //lists.get(selectedList).itemsArray.add(item);
+            //item_tableView.getItems().add(item);
         });
+    }
+
+    protected void AddTODOItem(TODOItem item, int selectedList)
+    {
+        lists.get(selectedList).itemsArray.add(item);
+        item_tableView.getItems().add(item);
     }
 
     @FXML
@@ -164,6 +187,13 @@ public class GUIController
             return;
         }
 
+        DeleteTODOItem(selectedList, selectedItem);
+        //lists.get(selectedList).itemsArray.remove(selectedItem);
+        //item_tableView.getItems().remove(selectedItem);
+    }
+
+    protected void DeleteTODOItem(int selectedList, int selectedItem)
+    {
         lists.get(selectedList).itemsArray.remove(selectedItem);
         item_tableView.getItems().remove(selectedItem);
     }
@@ -185,14 +215,50 @@ public class GUIController
     @FXML
     protected void LoadTODOList()
     {
-        Gson gson = new Gson();
+        /*Gson gson = new Gson();
         try
-        {
+        {*/
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Open TODO List");
             chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.JSON"));
             File file = chooser.showOpenDialog(null);
 
+            if(file == null)
+                return;
+
+            LoadTODOList_Handler(file);
+
+            /*Reader reader = Files.newBufferedReader(Path.of(file.toURI()));
+            MainListWrapper mainListWrapper = gson.fromJson(reader, MainListWrapper.class);
+
+            lists.clear();
+            list_listView.getItems().clear();
+            item_tableView.getItems().clear();
+            // Convert back to ObservableList and proper TODO classes
+            for(int i = 0; i < mainListWrapper.list.size(); i++)
+            {
+                TODOList todoList = new TODOList(mainListWrapper.list.get(i).title);
+                for(int j = 0; j < mainListWrapper.list.get(i).itemsArray.size(); j++)
+                {
+                    TODOItem todoItem = new TODOItem(mainListWrapper.list.get(i).itemsArray.get(j).title, mainListWrapper.list.get(i).itemsArray.get(j).description, LocalDate.parse(mainListWrapper.list.get(i).itemsArray.get(j).due_date), mainListWrapper.list.get(i).itemsArray.get(j).complete);
+                    todoList.itemsArray.add(todoItem);
+                }
+                lists.add(todoList);
+                list_listView.getItems().add(todoList.title);
+            }
+            item_tableView.getItems().addAll(lists.get(0).itemsArray);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }*/
+    }
+
+    protected void LoadTODOList_Handler(File file)
+    {
+        Gson gson = new Gson();
+        try
+        {
             if(file == null)
                 return;
 
@@ -227,6 +293,49 @@ public class GUIController
     {
         int selectedList = list_listView.getSelectionModel().getSelectedIndex();
 
+        SaveCurrentTODOList_Handler(selectedList);
+
+        /*if(selectedList < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
+            alert.setHeaderText("Select a TODO List.");
+            alert.setTitle("Error");
+            alert.showAndWait();
+            return;
+        }
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open TODO List");
+        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.JSON"));
+        File file = chooser.showSaveDialog(null);
+
+        try (Writer writer = new FileWriter(file))
+        {
+            MainListWrapper mainListWrapper = new MainListWrapper();
+
+            TODOListWrapper listWrapper = new TODOListWrapper();
+            listWrapper.title = lists.get(selectedList).title;
+            for(int j = 0; j < lists.get(selectedList).itemsArray.size(); j++)
+            {
+                TODOItemWrapper itemWrapper = new TODOItemWrapper();
+                itemWrapper.title = lists.get(selectedList).itemsArray.get(j).getTitle();
+                itemWrapper.description = lists.get(selectedList).itemsArray.get(j).getDescription();
+                itemWrapper.due_date = lists.get(selectedList).itemsArray.get(j).getDue_Date().toString();
+                itemWrapper.complete = lists.get(selectedList).itemsArray.get(j).getComplete();
+                listWrapper.itemsArray.add(itemWrapper);
+            }
+            mainListWrapper.list.add(listWrapper);
+
+            new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(mainListWrapper, writer);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }*/
+    }
+
+    protected void SaveCurrentTODOList_Handler(int selectedList)
+    {
         if(selectedList < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
@@ -243,8 +352,6 @@ public class GUIController
 
         try (Writer writer = new FileWriter(file))
         {
-
-
             MainListWrapper mainListWrapper = new MainListWrapper();
 
             TODOListWrapper listWrapper = new TODOListWrapper();
@@ -276,6 +383,38 @@ public class GUIController
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.JSON"));
         File file = chooser.showSaveDialog(null);
 
+        SaveAllTODOList_Handler(file);
+
+        /*try (Writer writer = new FileWriter(file))
+        {
+            MainListWrapper mainListWrapper = new MainListWrapper();
+
+            for (TODOList list : lists)
+            {
+                TODOListWrapper listWrapper = new TODOListWrapper();
+                listWrapper.title = list.title;
+                for (int j = 0; j < list.itemsArray.size(); j++)
+                {
+                    TODOItemWrapper itemWrapper = new TODOItemWrapper();
+                    itemWrapper.title = list.itemsArray.get(j).getTitle();
+                    itemWrapper.description = list.itemsArray.get(j).getDescription();
+                    itemWrapper.due_date = list.itemsArray.get(j).getDue_Date().toString();
+                    itemWrapper.complete = list.itemsArray.get(j).getComplete();
+                    listWrapper.itemsArray.add(itemWrapper);
+                }
+                mainListWrapper.list.add(listWrapper);
+            }
+
+            new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(mainListWrapper, writer);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }*/
+    }
+
+    protected void SaveAllTODOList_Handler(File file)
+    {
         try (Writer writer = new FileWriter(file))
         {
             MainListWrapper mainListWrapper = new MainListWrapper();
@@ -340,9 +479,16 @@ public class GUIController
         Optional<TODOList> optionalList = dialog.showAndWait();
         optionalList.ifPresent((TODOList list) ->
         {
-            lists.get(selectedList).title = list.title;
-            list_listView.getItems().set(selectedList, list.title);
+            EditTODOList_Handler(list, selectedList);
+            //lists.get(selectedList).title = list.title;
+            //list_listView.getItems().set(selectedList, list.title);
         });
+    }
+
+    protected void EditTODOList_Handler(TODOList list, int selectedList)
+    {
+        lists.get(selectedList).title = list.title;
+        list_listView.getItems().set(selectedList, list.title);
     }
 
     @FXML
@@ -383,11 +529,20 @@ public class GUIController
         Optional<TODOItem> optionalItem = dialog.showAndWait();
         optionalItem.ifPresent((TODOItem item) ->
         {
-            lists.get(selectedList).itemsArray.get(selectedIndex).setTitle(item.getTitle());
+            EditTODOItem_Handler(item, selectedList, selectedIndex);
+            /*lists.get(selectedList).itemsArray.get(selectedIndex).setTitle(item.getTitle());
             lists.get(selectedList).itemsArray.get(selectedIndex).setDescription(item.getDescription());
             lists.get(selectedList).itemsArray.get(selectedIndex).setDue_Date(item.getDue_Date());
-            lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(item.getComplete());
+            lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(item.getComplete());*/
         });
+    }
+
+    protected void EditTODOItem_Handler(TODOItem item, int selectedList, int selectedIndex)
+    {
+        lists.get(selectedList).itemsArray.get(selectedIndex).setTitle(item.getTitle());
+        lists.get(selectedList).itemsArray.get(selectedIndex).setDescription(item.getDescription());
+        lists.get(selectedList).itemsArray.get(selectedIndex).setDue_Date(item.getDue_Date());
+        lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(item.getComplete());
     }
 
     @FXML
@@ -404,6 +559,12 @@ public class GUIController
             return;
         }
 
+        MarkComplete_Handler(selectedList, selectedIndex);
+        //lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(!lists.get(selectedList).itemsArray.get(selectedIndex).getComplete());
+    }
+
+    protected void MarkComplete_Handler(int selectedList, int selectedIndex)
+    {
         lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(!lists.get(selectedList).itemsArray.get(selectedIndex).getComplete());
     }
 
