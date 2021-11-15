@@ -630,6 +630,17 @@ public class GUIController
         item_tableView.getItems().addAll(lists.get(selectedList).itemsArray);
         filtered = false;
     }
+
+    @FXML
+    protected void HelpDialog()
+    {
+        // Display help dialog with application tutorial
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("TODO List Help");
+        alert.setHeaderText("Help");
+        alert.setContentText("Load a saved TODO List:\n\tFile>Load TODO List\n\nSave Currently Selected List:\n\tFile>Save Selected List\n\nSave All TODO Lists:\n\tFile>Save All TODO Lists\n\nCreating a new TODO List:\n\tFile>New TODO List\n\nCreating a new TODO Item (Task):\n\tFile>New TODO Item\n(Current TODO List must be selected/highlighted)\n\nRemove TODO List:\n\tFile>Remove TODO List\n(TODO List must be selected/highlighted)\n\nRemove TODO Item (Task):\n\tFile>Remove TODO Item\n(TODO List and item must be selected/highlighted)\n\nEdit TODO List Title:\n\tEdit>Edit TODO List Title\n(TODO List must be selected/highlighted)\n\nEdit TODO Item (Task):\n\tEdit>Edit TODO Item\n(Task you wish to edit must be selected)\n\nMark Task as Complete:\n\tEdit>Toggle Complete\n(Repeat steps to mark the task incomplete)\n\nDisplay only complete items (Tasks):\n\tFilter>Display Complete\n\nDisplay only incomplete items (Tasks):\n\tFilter>Display Incomplete\n\nNo Filter:\n\tFilter>Display All");
+        alert.showAndWait();
+    }
 }
 
 class TODOList
