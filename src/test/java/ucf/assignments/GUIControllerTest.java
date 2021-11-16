@@ -113,7 +113,15 @@ class GUIControllerTest
     @Test
     void markComplete()
     {
+        TODOList list = new TODOList("Test Title");
+        controller.lists.add(list);
 
+        TODOItem item = new TODOItem("Title", "Description", LocalDate.now(), false);
+        controller.lists.get(0).itemsArray.add(item);
+
+        controller.lists.get(0).itemsArray.get(0).setComplete(true);
+
+        assertEquals(controller.lists.get(0).itemsArray.get(0).getComplete(), true);
     }
 
     @Test
