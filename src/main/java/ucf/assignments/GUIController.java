@@ -27,7 +27,7 @@ import java.util.Optional;
 public class GUIController
 {
     @FXML
-    private final ObservableList<TODOList> lists = FXCollections.observableArrayList();
+    final ObservableList<TODOList> lists = FXCollections.observableArrayList();
 
     private int currentTable;
     private boolean filtered = false;
@@ -81,16 +81,9 @@ public class GUIController
         Optional<TODOList> optionalList = dialog.showAndWait();
         optionalList.ifPresent((TODOList list) ->
         {
-            AddTODOList(list);
-            //lists.add(list);
-            //list_listView.getItems().add(list.title);
+            lists.add(list);
+            list_listView.getItems().add(list.title);
         });
-    }
-
-    protected void AddTODOList(TODOList list)
-    {
-        lists.add(list);
-        list_listView.getItems().add(list.title);
     }
 
     @FXML
@@ -100,11 +93,10 @@ public class GUIController
 
         if(removeIndex >= 0)
         {
-            DeleteTODOList(removeIndex);
-            //lists.remove(removeIndex);
-            //list_listView.getItems().remove(removeIndex);
-            //item_tableView.getItems().clear();
-            //list_listView.getSelectionModel().clearSelection();
+            lists.remove(removeIndex);
+            list_listView.getItems().remove(removeIndex);
+            item_tableView.getItems().clear();
+            list_listView.getSelectionModel().clearSelection();
         }
         else
         {
@@ -113,14 +105,6 @@ public class GUIController
             alert.setTitle("Error");
             alert.showAndWait();
         }
-    }
-
-    protected void DeleteTODOList(int removeIndex)
-    {
-        lists.remove(removeIndex);
-        list_listView.getItems().remove(removeIndex);
-        item_tableView.getItems().clear();
-        list_listView.getSelectionModel().clearSelection();
     }
 
     @FXML
