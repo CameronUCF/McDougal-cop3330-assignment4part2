@@ -110,8 +110,7 @@ public class GUIController
     @FXML
     protected void CreateTODOItem()
     {
-        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
-        if(selectedList < 0)
+        if(currentTable < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
             alert.setHeaderText("Select a TODO List.");
@@ -144,7 +143,7 @@ public class GUIController
         Optional<TODOItem> optionalItem = dialog.showAndWait();
         optionalItem.ifPresent((TODOItem item) ->
         {
-            lists.get(selectedList).itemsArray.add(item);
+            lists.get(currentTable).itemsArray.add(item);
             item_tableView.getItems().add(item);
         });
     }
@@ -152,10 +151,9 @@ public class GUIController
     @FXML
     protected void RemoveTODOItem()
     {
-        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
         int selectedItem =  item_tableView.getSelectionModel().getSelectedIndex();
 
-        if(selectedList < 0 || selectedItem < 0)
+        if(currentTable < 0 || selectedItem < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
             alert.setHeaderText("Select a TODO List and TODO Item.");
@@ -164,7 +162,7 @@ public class GUIController
             return;
         }
 
-        lists.get(selectedList).itemsArray.remove(selectedItem);
+        lists.get(currentTable).itemsArray.remove(selectedItem);
         item_tableView.getItems().remove(selectedItem);
     }
 
@@ -225,9 +223,7 @@ public class GUIController
     @FXML
     protected void SaveCurrentTODOList()
     {
-        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
-
-        if(selectedList < 0)
+        if(currentTable < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
             alert.setHeaderText("Select a TODO List.");
@@ -246,14 +242,14 @@ public class GUIController
             MainListWrapper mainListWrapper = new MainListWrapper();
 
             TODOListWrapper listWrapper = new TODOListWrapper();
-            listWrapper.title = lists.get(selectedList).title;
-            for(int j = 0; j < lists.get(selectedList).itemsArray.size(); j++)
+            listWrapper.title = lists.get(currentTable).title;
+            for(int j = 0; j < lists.get(currentTable).itemsArray.size(); j++)
             {
                 TODOItemWrapper itemWrapper = new TODOItemWrapper();
-                itemWrapper.title = lists.get(selectedList).itemsArray.get(j).getTitle();
-                itemWrapper.description = lists.get(selectedList).itemsArray.get(j).getDescription();
-                itemWrapper.due_date = lists.get(selectedList).itemsArray.get(j).getDue_Date().toString();
-                itemWrapper.complete = lists.get(selectedList).itemsArray.get(j).getComplete();
+                itemWrapper.title = lists.get(currentTable).itemsArray.get(j).getTitle();
+                itemWrapper.description = lists.get(currentTable).itemsArray.get(j).getDescription();
+                itemWrapper.due_date = lists.get(currentTable).itemsArray.get(j).getDue_Date().toString();
+                itemWrapper.complete = lists.get(currentTable).itemsArray.get(j).getComplete();
                 listWrapper.itemsArray.add(itemWrapper);
             }
             mainListWrapper.list.add(listWrapper);
@@ -306,8 +302,7 @@ public class GUIController
     @FXML
     protected void EditTODOListTitle()
     {
-        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
-        if(selectedList < 0)
+        if(currentTable < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
             alert.setHeaderText("Select a TODO List.");
@@ -323,7 +318,7 @@ public class GUIController
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        TextField listTitle = new TextField(lists.get(selectedList).title);
+        TextField listTitle = new TextField(lists.get(currentTable).title);
 
         dialogPane.setContent(new VBox(8, listTitle));
         Platform.runLater(listTitle::requestFocus);
@@ -338,17 +333,16 @@ public class GUIController
         Optional<TODOList> optionalList = dialog.showAndWait();
         optionalList.ifPresent((TODOList list) ->
         {
-            lists.get(selectedList).title = list.title;
-            list_listView.getItems().set(selectedList, list.title);
+            lists.get(currentTable).title = list.title;
+            list_listView.getItems().set(currentTable, list.title);
         });
     }
 
     @FXML
     protected void EditTODOItem()
     {
-        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
         int selectedIndex = item_tableView.getSelectionModel().getSelectedIndex();
-        if(selectedList < 0 || selectedIndex < 0 || filtered)
+        if(currentTable < 0 || selectedIndex < 0 || filtered)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
             alert.setHeaderText("Select a TODO List & TODO Item and make sure list is not filtered.");
@@ -364,9 +358,9 @@ public class GUIController
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        TextField itemTitle = new TextField(lists.get(selectedList).itemsArray.get(selectedIndex).getTitle());
-        TextField itemDescription = new TextField(lists.get(selectedList).itemsArray.get(selectedIndex).getDescription());
-        DatePicker datePicker = new DatePicker(lists.get(selectedList).itemsArray.get(selectedIndex).getDue_Date());
+        TextField itemTitle = new TextField(lists.get(currentTable).itemsArray.get(selectedIndex).getTitle());
+        TextField itemDescription = new TextField(lists.get(currentTable).itemsArray.get(selectedIndex).getDescription());
+        DatePicker datePicker = new DatePicker(lists.get(currentTable).itemsArray.get(selectedIndex).getDue_Date());
 
         dialogPane.setContent(new VBox(8, itemTitle, itemDescription, datePicker));
         Platform.runLater(itemTitle::requestFocus);
@@ -381,19 +375,18 @@ public class GUIController
         Optional<TODOItem> optionalItem = dialog.showAndWait();
         optionalItem.ifPresent((TODOItem item) ->
         {
-            lists.get(selectedList).itemsArray.get(selectedIndex).setTitle(item.getTitle());
-            lists.get(selectedList).itemsArray.get(selectedIndex).setDescription(item.getDescription());
-            lists.get(selectedList).itemsArray.get(selectedIndex).setDue_Date(item.getDue_Date());
-            lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(item.getComplete());
+            lists.get(currentTable).itemsArray.get(selectedIndex).setTitle(item.getTitle());
+            lists.get(currentTable).itemsArray.get(selectedIndex).setDescription(item.getDescription());
+            lists.get(currentTable).itemsArray.get(selectedIndex).setDue_Date(item.getDue_Date());
+            lists.get(currentTable).itemsArray.get(selectedIndex).setComplete(item.getComplete());
         });
     }
 
     @FXML
     protected void MarkComplete()
     {
-        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
         int selectedIndex = item_tableView.getSelectionModel().getSelectedIndex();
-        if(selectedList < 0 || selectedIndex < 0)
+        if(currentTable < 0 || selectedIndex < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
             alert.setHeaderText("Select a TODO List.");
@@ -402,15 +395,14 @@ public class GUIController
             return;
         }
 
-        lists.get(selectedList).itemsArray.get(selectedIndex).setComplete(!lists.get(selectedList).itemsArray.get(selectedIndex).getComplete());
+        lists.get(currentTable).itemsArray.get(selectedIndex).setComplete(!lists.get(currentTable).itemsArray.get(selectedIndex).getComplete());
     }
 
     // Filter Menu Functions
     @FXML
     protected void ShowComplete()
     {
-        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
-        if(selectedList < 0)
+        if(currentTable < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
             alert.setHeaderText("Select a TODO List.");
@@ -420,10 +412,10 @@ public class GUIController
         }
 
         item_tableView.getItems().clear();
-        for(int i = 0; i < lists.get(selectedList).itemsArray.size(); i++)
+        for(int i = 0; i < lists.get(currentTable).itemsArray.size(); i++)
         {
-            if(lists.get(selectedList).itemsArray.get(i).getComplete())
-                item_tableView.getItems().add(lists.get(selectedList).itemsArray.get(i));
+            if(lists.get(currentTable).itemsArray.get(i).getComplete())
+                item_tableView.getItems().add(lists.get(currentTable).itemsArray.get(i));
         }
         filtered = true;
     }
@@ -431,8 +423,7 @@ public class GUIController
     @FXML
     protected void ShowIncomplete()
     {
-        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
-        if(selectedList < 0)
+        if(currentTable < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
             alert.setHeaderText("Select a TODO List.");
@@ -442,10 +433,10 @@ public class GUIController
         }
 
         item_tableView.getItems().clear();
-        for(int i = 0; i < lists.get(selectedList).itemsArray.size(); i++)
+        for(int i = 0; i < lists.get(currentTable).itemsArray.size(); i++)
         {
-            if(!lists.get(selectedList).itemsArray.get(i).getComplete())
-                item_tableView.getItems().add(lists.get(selectedList).itemsArray.get(i));
+            if(!lists.get(currentTable).itemsArray.get(i).getComplete())
+                item_tableView.getItems().add(lists.get(currentTable).itemsArray.get(i));
         }
         filtered = true;
     }
@@ -453,8 +444,7 @@ public class GUIController
     @FXML
     protected void ShowAll()
     {
-        int selectedList = list_listView.getSelectionModel().getSelectedIndex();
-        if(selectedList < 0)
+        if(currentTable < 0)
         {
             Alert alert = new Alert(Alert.AlertType.ERROR); // Alert dialog
             alert.setHeaderText("Select a TODO List.");
@@ -464,7 +454,7 @@ public class GUIController
         }
 
         item_tableView.getItems().clear();
-        item_tableView.getItems().addAll(lists.get(selectedList).itemsArray);
+        item_tableView.getItems().addAll(lists.get(currentTable).itemsArray);
         filtered = false;
     }
 
