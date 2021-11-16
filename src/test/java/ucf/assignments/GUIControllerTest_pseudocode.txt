@@ -1,0 +1,52 @@
+
+BeforeEach Function Call
+    Create a new GUIController Class
+
+void createTODOList()
+    Create a TODOList object outside of GUIController
+    add TODOList to global array of TODOLists in GUIController
+    Test to ensure it was successfully added
+
+void removeTODOList()
+    Create two TODOList objects
+    Add both objects to the GUIController TODOList array
+    Remove the first object added to GUIController TODOList array
+    Test to ensure that the only object left in the GUIController TODOList array is the second object that was added
+
+void createTODOItem()
+    Create a TODOList object
+    Add that object to the GUIController TODOList array
+    Create a TODOItem object
+    Add that item to previously added to TODOList within the TODOList array
+    Test to ensure the TODOList array holds the TODOItem in the correct spot
+
+void removeTODOItem()
+    Create a TODOList object
+    Add TODOList object to TODOList array
+    Create two TODOItem objects
+    Add both TODOItem objects to TODOList with in GUIController TODOList array
+    Remove the first TODOItem within GUIController TODOList array
+    Ensure the only TODOItem within the TODOList array is the second item added
+
+void editTODOListTitle()
+    Create TODOList object
+    Add TODOList object to TODOList array in GUIController
+    Make edits to TODOList title with GUIController
+    Ensure the edits are correctly set
+
+
+void editTODOItem()
+    Create TODOList object
+    Add TODOList object to TODOList array in GUIController
+    Create TODOItem object
+    Add TODOItem object to TODOList with GUIController
+    Edit each variable in TODOList item
+    Ensure that each edit was set correctly within GUIController
+
+void markComplete()
+    Create TODOList object
+    Add TODOList object to TODOList array in GUIController
+    Create TODOItem object
+    Add TODOItem object to TODOList with GUIController
+    Call the function setComplete on the desired TODOItem
+    Ensure the item was correctly marked as complete
